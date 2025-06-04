@@ -1,13 +1,15 @@
 const gameContainer = document.querySelector(".gameContainer");
+
 const boxContainer = document.createElement("div");
 const guessedNumberP = document.createElement("p");
+
 boxContainer.classList.add("boxContainer");
 
 gameContainer.appendChild(boxContainer);
 gameContainer.appendChild(guessedNumberP);
-let allBoxes = [];
-let allBoxValues = [];
-let userChance = 3;
+
+const allBoxes = [];
+const allBoxValues = [];
 
 const createBox = () => {
   let randomNumber;
@@ -38,40 +40,30 @@ const createManyBox = (boxQuantity) => {
 
 const message = document.getElementById("message");
 let guessedNumber;
-
-const displayGussedNumber = () => {
+const displayGuessedNumber = () => {
   guessedNumber = allBoxValues[Math.floor(Math.random() * allBoxValues.length)];
   guessedNumberP.textContent = guessedNumber;
 };
 
-let isResetting = false;
-
 const chooseOneBox = () => {
   allBoxes.forEach((box) => {
     box.addEventListener("click", () => {
-      if (isResetting) return;
       box.querySelector(".boxValue").classList.add("revealed");
-      if (box.querySelector(".boxValue").textContent == guessedNumber) {
+      if (
+        parseInt(box.querySelector(".boxValue").textContent) === guessedNumber
+      ) {
         message.textContent = "answer is right";
-        isResetting = true;
         resetGame();
       } else {
-        userChance--;
-        if (userChance <= 0) {
-          message.textContent = "no more chance you defeated";
-          isResetting = true;
-          resetGame();
-        } else {
-          message.textContent = "answer is false";
-        }
+        message.textContent = "answer is false";
       }
     });
   });
 };
 
 const main = () => {
-  createManyBox(5);
-  displayGussedNumber();
+  createManyBox(3);
+  displayGuessedNumber();
   chooseOneBox();
 };
 
@@ -79,14 +71,15 @@ main();
 
 const resetGame = () => {
   setTimeout(() => {
-    allBoxValues = [];
-    allBoxes = [];
+    allBoxes.length = 0;
+    allBoxValues.length = 0;
 
     boxContainer.innerHTML = "";
-    message.textContent = "";
     guessedNumberP.textContent = "";
-    userChance = 3;
-    isResetting = false;
-    main();
+    message.textContent = "";
+
+    createManyBox(3);
+    displayGuessedNumber();
+    chooseOneBox();
   }, 2000);
 };
